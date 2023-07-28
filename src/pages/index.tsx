@@ -16,6 +16,8 @@ import { useERC20Contract } from '~/hooks/useContract'
 import hooks from '~/state/multicall/hooks'
 import { useAddPopup, useBlockNumber } from '~/state/application/hooks'
 import { useHasSentMessage, useIsTransactionPending, useTransactionAdder } from '~/state/transactions/hooks'
+import { ExternalLink } from '~/components/Link'
+import { getExplorerLink } from '~/utils/explorers'
 
 const Container = styled(ColumnStart)`
   width: 70%;
@@ -148,7 +150,7 @@ function calculateGasMargin(value: BigNumber) {
 function DestinationRow({ destination, messageData }: { destination: Destination; messageData: MessageData }) {
   const [awaitingConfirmation, setAwaitingConfirmation] = useState(false)
   const [txHash, setTxHash] = useState('')
-  const { account, hooks } = useWeb3React()
+  const { chainId, account, hooks } = useWeb3React()
   const provider = hooks.usePriorityProvider()
   const txPending = useIsTransactionPending(txHash)
   const messageSent = useHasSentMessage(destination.address)
@@ -226,7 +228,9 @@ function DestinationRow({ destination, messageData }: { destination: Destination
   return (
     <RowBetween>
       <div>{destination.tag}</div>
-      <Address>{destination.address}</Address>
+      <ExternalLink href={getExplorerLink(chainId, 'address', destination.address)}>
+        <Address>{destination.address}</Address>
+      </ExternalLink>
       <SendButton onClick={onSendMessage} disabled={messageSent || destination.disabled}>
         {awaitingConfirmation
           ? 'Awaiting... '
