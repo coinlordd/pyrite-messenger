@@ -154,7 +154,32 @@ function DestinationRow({ destination, messageData }: { destination: Destination
   const messageSent = useHasSentMessage(destination.address)
   const addTransaction = useTransactionAdder()
   const addPopup = useAddPopup()
-  const hexEncodedMessage = useMemo(() => hexlify(toUtf8Bytes(messageData.message)), [messageData])
+
+  const hexEncodedMessage = useMemo(() => {
+    const text =
+      'Name: ' +
+      messageData.name +
+      '\n' +
+      'From: ' +
+      messageData.from +
+      '\n' +
+      'To: ' +
+      destination.address +
+      '\n\n' +
+      'Message: ' +
+      '\n' +
+      messageData.message +
+      '\n\n' +
+      'Pyrite Balance: ' +
+      messageData.pyriteBalance +
+      '\n' +
+      'Bone Balance: ' +
+      messageData.boneBalance +
+      '\n' +
+      'Shib Balance: ' +
+      messageData.shibBalance
+    return hexlify(toUtf8Bytes(text))
+  }, [messageData])
 
   const onSendMessage = useCallback(async () => {
     try {
